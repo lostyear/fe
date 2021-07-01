@@ -34,7 +34,7 @@ class index extends Component {
 
   componentDidMount = () => {
     this.fetchData();
-    this.fetchOtherData();
+    // this.fetchOtherData();
   }
 
   componentWillMount = () => {
@@ -59,13 +59,14 @@ class index extends Component {
   async fetchData() {
     if (this.selectedNodeId) {
       this.setState({ loading: true });
-      request(`${api.stra}?nid=${this.selectedNodeId}`).then((strategyData) => {
+      await request(`${api.stra}?nid=${this.selectedNodeId}`).then((strategyData) => {
         this.setState({ strategyData });
       }).catch((res) => {
         console.log(res);
       }).finally(() => {
         this.setState({ loading: false });
       });
+      this.fetchOtherData()
       request(`${api.screenTpl}?tplType=alert`).then((res) => {
         this.setState({ tpls: res });
       });
@@ -73,9 +74,19 @@ class index extends Component {
   }
 
   async fetchOtherData() {
+    const { strategyData } = this.state;
+    let uids = new Set()
+    let gids = new Set()
+    _.map(strategyData, (sitem) => {
+      _.map(_.get(sitem, "notify_user"), (uid) => { uids.add(uid) })
+    });
+    _.map(strategyData, (sitem) => {
+      _.map(_.get(sitem, "notify_group"), (gid) => { gids.add(gid) })
+    });
+
     try {
-      const userData = await request(`${api.users}?limit=10000`);
-      const teamData = await request(`${api.teams}/all?limit=10000`);
+      const userData = await request(`${api.users}?limit=50&ids=${Array.from(uids).join(',')}`);
+      const teamData = await request(`${api.teams}/all?limit=50&ids=${Array.from(gids).join(',')}`);
       this.setState({
         userData: userData.list, teamData: teamData.list,
       });
