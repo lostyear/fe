@@ -49,9 +49,9 @@ class SettingFields extends Component {
     this.fetchMetrics.call(this, this.props.initialValues.category);
     this.fetchTagkvs(this.props.initialValues.exprs);
     this.fetchNotifyData({
-      ids: _.get(this.props.initialValues, 'notify_group')
+      ids: _.get(this.props.initialValues, 'notify_group').join(',')
     }, {
-      ids: _.get(this.props.initialValues, 'notify_user')
+      ids: _.get(this.props.initialValues, 'notify_user').join(',')
     });
     // this.fetchNotifyData();
   }

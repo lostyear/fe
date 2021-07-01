@@ -149,7 +149,8 @@ export default class Actions extends Component {
             {
               _.map(notifyUserData, (item, i) => {
                 return (
-                  <Option key={i} value={item.id}>{item.username} {item.dispname} {item.phone} {item.email}</Option>
+                  // <Option key={i} value={item.id}>{item.username} {item.dispname} {item.phone} {item.email}</Option>
+                  <Option key={i} value={item.id}> {item.dispname}({item.username}) </Option>
                 );
               })
             }
